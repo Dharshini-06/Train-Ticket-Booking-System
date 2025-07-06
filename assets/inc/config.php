@@ -1,7 +1,7 @@
 <?php
 $dbuser="root";
-$dbpass="admin";
+$dbpass="";
 $host="localhost";
 $db="orrsphp";
-$stmt=new mysqli($host,$dbuser, $dbpass, $db);
+$mysqli=new mysqli($host,$dbuser, $dbpass, $db);
 ?>
