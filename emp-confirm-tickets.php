@@ -4,7 +4,7 @@
     //date_default_timezone_set('Africa /Nairobi');
     include('assets/inc/checklogin.php');
     check_login();
-    $aid=$_SESSION['admin_id'];
+    $aid=$_SESSION['emp_id'];
     if(isset($_POST['train_fare_confirm_checkout']))
     {
      
@@ -34,6 +34,7 @@
   <body>
     <div class="be-wrapper be-fixed-sidebar ">
     <!--Navigation Bar-->
+	<!--Log on to codeastro.com for more projects!-->
       <?php include('assets/inc/navbar.php');?>
       <!--End Navigation Bar-->
 
@@ -86,6 +87,7 @@
         {
         ?>
           <div class="row">
+		  <!--Log on to codeastro.com for more projects!-->
             <div class="col-md-12">
               <div class="card card-border-color card-border-color-success">
                 <div class="card-header card-header-divider"><span class="card-subtitle"></span></div>
@@ -98,13 +100,13 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Email</label>
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">My Email</label>
                       <div class="col-12 col-sm-8 col-lg-6">
                         <input class="form-control" readonly name="pass_email"  value="<?php echo $row->pass_email;?>" id="inputText3" type="text">
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Address</label>
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">My Address</label>
                       <div class="col-12 col-sm-8 col-lg-6">
                         <input class="form-control" readonly name= "pass_addr"  value="<?php echo $row->pass_addr;?>" id="inputText3" type="text">
                       </div>
@@ -122,13 +124,13 @@
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Departure</label>
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">My Departure Station</label>
                       <div class="col-12 col-sm-8 col-lg-6">
                         <input class="form-control" readonly  name = "train_dep_stat" value="<?php echo $row->train_dep_stat;?>" id="inputText3" type="text">
                       </div>
                     </div>
                     <div class="form-group row">
-                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Arrival</label>
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">My Arrival Station</label>
                       <div class="col-12 col-sm-8 col-lg-6">
                         <input class="form-control" readonly name = "train_arr_stat" value="<?php echo $row->train_arr_stat;?>" id="inputText3" type="text">
                       </div>
@@ -148,9 +150,10 @@
                     <div class="form-group row">
                       <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Confirmation</label>
                       <div class="col-12 col-sm-8 col-lg-6">
-
+						<!--Log on to codeastro.com for more projects!-->
                         <select class="form-control" name= "confirmation" id="exampleFormControlSelect1 inputText3">
-                          <option value="Approved" selected>Approved</option>
+                          <option selected>--Select--</option>
+                          <option value="Approved">Approved</option>
                           <option value="Pending">Pending</option>
                       </select>
               
@@ -175,7 +178,8 @@
         <?php }?>
         
         </div>
-       
+        
+		<!--Log on to codeastro.com for more projects!-->
       </div>
 
     </div>

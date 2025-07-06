@@ -1,10 +1,10 @@
 <!--Start Server side code to give us and hold session-->
 <?php
   session_start();
-  include('db.php');
+  include('../db.php');
   include('assets/inc/checklogin.php');
   check_login();
-  $aid=$_SESSION['admin_id'];
+  $aid=$_SESSION['emp_id'];
   //delete or remove library user  php code
 if(isset($_GET['del']))
 {
@@ -37,7 +37,6 @@ if(isset($_GET['del']))
     <!--navbar-->
       <?php include('assets/inc/navbar.php');?>
       <!--End navbar-->
-	  <!--Log on to codeastro.com for more projects!-->
       <!--Sidebar-->
       <?php include('assets/inc/sidebar.php');?>
       <!--End Sidebar-->
@@ -77,7 +76,6 @@ if(isset($_GET['del']))
         <?php } ?>
 
         <div class="main-content container-fluid">
-		<!--Log on to codeastro.com for more projects!-->
           <div class="row">
             <div class="col-sm-12">
               <div class="card card-table">
@@ -92,7 +90,7 @@ if(isset($_GET['del']))
                   <table class="table table-striped table-bordered table-hover table-fw-widget" id="table1">
                     <thead class="thead-dark">
                       <tr>
-                        <th>Name</th>
+                        <th>Passeger</th>
                         <th>Email</th>
                         <th>Address</th>
                         <th>Train Number</th>
@@ -100,11 +98,10 @@ if(isset($_GET['del']))
                         <th>Arrival</th>
                         <th>Fare</th>
                         <th>Payment Code</th>
-                        <th>Actions</th>
+                        <th>Action</th>
                       </tr> 
                     </thead>
                     <tbody>
-					<!--Log on to codeastro.com for more projects!-->
                     <?php
                         /*
                         *Lets get details of available trains tickets! !
@@ -127,7 +124,7 @@ if(isset($_GET['del']))
                         <td class="center">$<?php echo $row->train_fare;?></td>
                         <td class="center"><?php echo $row->fare_payment_code;?></td>
                         <td class="center"><a class ="badge badge-success" href ="emp-confirm-tickets.php?ticket_id=<?php echo $row->ticket_id;?>">Manage</a> 
-                            <hr> <a class ="badge badge-danger" href ="emp-manage-tickets.php?del=<?php echo $row->ticket_id;?>">Delete</a>
+                            <hr> <a class ="badge badge-danger" href ="emp-manage-tickets.php?del=<?php echo $row->id;?>">Delete</a>
                         </td>                      
                       </tr>
                         <?php }?>

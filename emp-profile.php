@@ -1,9 +1,9 @@
 <?php
     session_start();
-    include('db.php');
+    include('../db.php');
     include('assets/inc/checklogin.php');
     check_login();
-    $aid=$_SESSION['admin_id'];
+    $aid=$_SESSION['emp_id'];
 ?>
 
 <!DOCTYPE html>
@@ -25,8 +25,8 @@
 
         <!--Server Side Scrit To Fetch all details of logged in user-->
         <?php
-            $aid=$_SESSION['admin_id'];//Assaign session variable to  ID
-            $ret="select * from orrs_admin where admin_id=?"; 
+            $aid=$_SESSION['emp_id'];//Assaign session variable to passenger ID
+            $ret="select * from orrs_employee where emp_id=?"; //sELECT ALL FROM PASSENGERS WHERE PASSENGER ID IS THE LOGGED ONE
             $stmt= $mysqli->prepare($ret) ;
             $stmt->bind_param('i',$aid);
             $stmt->execute() ;//ok
@@ -42,17 +42,37 @@
             <div class="row">
               <div class="col-lg-12">
                 <div class="user-display">
-                  <div class="user-display-bg"><img src="assets/img/profile/<?php echo $row->admin_dpic;?>" alt="Profile Background"></div>
+                  <div class="user-display-bg"><img src="assets/img/pic04.jpg" alt="Profile Background">
+                  </div>
                   <div class="user-display-bottom">
-                    <div class="user-display-avatar"><img src="assets/img/profile/defaultimg.jpg<?php echo $row->admin_dpic;?>" alt="Avatar"></div>
+                    <div class="user-display-avatar"><img src="assets/img/profile/defaultimg.jpg" alt="Avatar">
+                    </div>
                     <div class="user-display-info">
-                      <div class="name"><?php echo $row->admin_fname;?> <?php echo $row->admin_lname;?> </div>
-                      <div class="nick"><span class="mdi mdi-account"></span><?php echo $row->admin_uname;?></div>
+                      <div class="name"><?php echo $row->emp_fname;?> <?php echo $row->emp_lname;?> </div>
+                      <div class="nick"><span class="mdi mdi-account"></span><?php echo $row->emp_uname;?></div>
                     </div>
                     
                   </div>
                 </div>
-                
+                <div class="user-info-list card">
+                  <div class="card-header card-header-divider">About Me</div>
+                  <div class="card-body">
+                    <table class="no-border no-strip skills">
+                      <tbody class="no-border-x no-border-y">
+                        <tr>
+                          <td class="icon"><span class="mdi mdi-smartphone-android"></span></td>
+                          <td class="item">Mobile<span class="icon s7-phone"></span></td>
+                          <td><?php echo $row->emp_phone;?></td>
+                        </tr> 
+                        <tr>
+                          <td class="icon"><span class="mdi mdi mdi-train"></span></td>
+                          <td class="item">Depart <span class="icon s7-phone"></span></td>
+                          <td><?php echo $row->emp_dept;?></td>
+                        </tr>                       
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
           </div>
         </div>

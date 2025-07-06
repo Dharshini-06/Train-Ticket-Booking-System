@@ -1,128 +1,116 @@
+<!-- Server side code for log in-->
 <?php
-session_start();
-include('db.php');
+    session_start();
+    include('../db.php');//get configuration file
+    if(isset($_POST['emp_login']))
+    {
+      $emp_email=$_POST['emp_email'];
+      $emp_pwd=sha1(md5($_POST['emp_pwd']));//double encrypt to increase security
+      $stmt=$mysqli->prepare("SELECT emp_email ,emp_pwd , emp_id FROM orrs_employee WHERE emp_email=? and emp_pwd=? ");//sql to log in user
+      $stmt->bind_param('ss',$emp_email,$emp_pwd);//bind fetched parameters
+      $stmt->execute();//execute bind
+      $stmt -> bind_result($emp_email,$emp_pwd,$emp_id);//bind result
+      $rs=$stmt->fetch();
+      $_SESSION['emp_id']=$emp_id;//assaign session to passenger id
+      //$uip=$_SERVER['REMOTE_ADDR'];
+      //$ldate=date('d/m/Y h:i:s', time());
+      if($rs)
+      {//if its sucessfull
+        header("location:emp-dashboard.php");
+      }
 
-$success = $error = "";
-
-if (isset($_POST['emp_login'])) {
-    $admin_email = $_POST['admin_email'];
-    $admin_pwd = sha1(md5($_POST['admin_pwd'])); // legacy hash matching your db
-
-    $stmt = $mysqli->prepare("SELECT admin_id, admin_fname, admin_lname, admin_uname FROM orrs_admin WHERE admin_email = ? AND admin_pwd = ?");
-    $stmt->bind_param('ss', $admin_email, $admin_pwd);
-    $stmt->execute();
-    $stmt->store_result();
-
-    if ($stmt->num_rows == 1) {
-        $stmt->bind_result($admin_id, $admin_fname, $admin_lname, $admin_uname);
-        $stmt->fetch();
-        $_SESSION['admin_id'] = $admin_id;
-        $_SESSION['admin_name'] = $admin_uname;
-        $success = "Login Successful";
-        header("refresh:1;url=emp-dashboard.php");
-    } else {
-        $error = "Access Denied. Check your credentials.";
-    }
-}
+      else
+      {
+      #echo "<script>alert('Access Denied Please Check Your Credentials');</script>";
+      $error = "Access Denied Please Check Your Credentials";
+      }
+  }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
+  
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Login</title>
-  <link rel="stylesheet" href="assets/css/app.css">
-  <link rel="stylesheet" href="assets/lib/bootstrap/dist/css/bootstrap.min.css">
-  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="assets/img/favicon.ico">
+    <title>Online Railway Reservation System</title>
+    <link rel="stylesheet" type="text/css" href="assets/lib/perfect-scrollbar/css/perfect-scrollbar.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/lib/material-design-icons/css/material-design-iconic-font.min.css"/>
+    <link rel="stylesheet" href="assets/css/app.css" type="text/css"/>
+    <!--Trigger Sweet Alert-->
+    <?php if(isset($error)) {?>
+  <!--This code for injecting an alert-->
+      <script>
+            setTimeout(function () 
+            { 
+              swal("Failed!","<?php echo $error;?>!","error");
+            },
+              100);
+      </script>
+					
+			<?php } ?>
+  </head>
+  <body class="be-splash-screen">
+    <div class="be-wrapper be-login">
+      <div class="be-content">
+        <div class="main-content container-fluid">
+          <div class="splash-container">
+            <div class="card card-border-color card-border-color-success">
+              <div class="card-header"><img class="logo-img" src="assets/img/logo-xx.png" alt="logo" width="{conf.logoWidth}" height="27"><span class="splash-description">Please enter your user information.</span></div>
+              <div class="card-body">
 
-  <!-- Inline Style for Background Image -->
-  <style>
-    /* Add background image to the entire body (which has the 'be-splash-screen' class) */
-    body.be-splash-screen {
-      background-image: url("admin/assets/img/360_F_1055396548_IJFVICX3EmAld9WVN9i8wuBtp97n3YuK.png") /* Replace with the correct image path */
-      background-size: cover;
-      background-position: center center;
-      background-repeat: no-repeat;
-      height: 100vh; /* Ensure the background covers the entire viewport height */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+              <!--Login Form-->
+                <form method ="POST">
+                  <div class="login-form ">
 
-    /* Optional: Styling for the login container to make it stand out from the background */
-    .splash-container {
-      background-color: rgba(255, 255, 255, 0.8); /* Optional: Semi-transparent white background */
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    }
+                    <div class="form-group">
+                      <input class="form-control" name="emp_email" type="text" placeholder="Email" autocomplete="off">
+                    </div>
 
-    /* Styling for the login button */
-    .login-submit input[type="submit"] {
-      background-color: #d9534f;
-      color: white;
-      border: none;
-    }
-  </style>
-</head>
-<body class="be-splash-screen">
-  <div class="be-wrapper be-login">
-    <div class="be-content">
-      <div class="main-content container-fluid">
-        <div class="splash-container">
-          <div class="card card-border-color card-border-color-danger">
-            <div class="card-header">
-              <img class="logo-img" src="assets/img/logo-xx.png" alt="logo" width="120" height="30">
-              <span class="splash-description">Admin Login Panel</span>
-            </div>
-            <div class="card-body">
+                    <div class="form-group">
+                      <input class="form-control" name="emp_pwd" type="password" placeholder="Password">
+                    </div>
 
-              <?php if ($error): ?>
-                <script>swal("Failed", "<?= $error ?>", "error");</script>
-              <?php elseif ($success): ?>
-                <script>swal("Success", "<?= $success ?>", "success");</script>
-              <?php endif; ?>
-
-              <form method="POST">
-                <div class="login-form">
-                  <div class="form-group">
-                    <input class="form-control" name="admin_email" type="text" placeholder="Email" required>
-                  </div>
-                  <div class="form-group">
-                    <input class="form-control" name="admin_pwd" type="password" placeholder="Password" required>
-                  </div>
-                  <div class="form-group row login-tools">
-                    <div class="col-6 login-remember">
-                      <div class="custom-control custom-checkbox">
-                        <input class="custom-control-input" type="checkbox" id="check1">
-                        <label class="custom-control-label" for="check1">Remember Me</label>
+                    <div class="form-group row login-tools">
+                      <div class="col-6 login-remember">
+                        <div class="custom-control custom-checkbox">
+                          <input class="custom-control-input" type="checkbox" id="check1">
+                          <label class="custom-control-label" for="check1">Remember Me</label>
+                        </div>
                       </div>
+                      <div class="col-6 login-forgot-password"><a target = "_blank" href="../pass-pwd-forgot.php">Forgot Password?</a></div>
                     </div>
-                    <div class="col-6 login-forgot-password">
-                      <a href="../pass-pwd-forgot.php">Forgot Password?</a>
-                    </div>
-                  </div>
-                  <div class="form-group row login-submit">
-                    <div class="col-12">
-                      <input type="submit" name="emp_login" class="btn btn-danger btn-xl btn-block" value="Log In">
-                    </div>
-                  </div>
-                </div>
-              </form>
 
-              <div class="splash-footer">
-                Back <a href="../index.php">Home</a> | 
-                <a href="admin-register.php">Register New Admin</a>
+                    <div class="form-group row login-submit">
+                      <div class="col-6"><input type = "submit" name ="emp_login" class="btn btn-success btn-xl" value ="Log In"></div>
+                    </div>
+                    
+                  </div>
+                </form>
+                <!--End Login-->
               </div>
-
             </div>
-          </div>
+            <div class="splash-footer">Back <a href = "../index.php">Home</a></div>
+
         </div>
       </div>
     </div>
-  </div>
+    <script src="assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="assets/lib/perfect-scrollbar/js/perfect-scrollbar.min.js" type="text/javascript"></script>
+    <script src="assets/lib/bootstrap/dist/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+    <script src="assets/js/app.js" type="text/javascript"></script>
+    <script src="assets/js/swal.js"></script>
 
-  <script src="assets/lib/jquery/jquery.min.js"></script>
-  <script src="assets/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <script type="text/javascript">
+      $(document).ready(function(){
+      	//-initialize the javascript
+      	App.init();
+      });
+      
+    </script>
+  </body>
+
 </html>

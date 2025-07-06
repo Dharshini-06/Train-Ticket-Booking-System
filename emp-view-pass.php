@@ -52,7 +52,7 @@
       <!--End Sidebar-->
       <div class="be-content">
         <div class="page-head">
-          <h2 class="page-head-title">Passenger Details</h2>
+          <h2 class="page-head-title">View Passenger</h2>
           <nav aria-label="breadcrumb" role="navigation">
             <ol class="breadcrumb page-head-nav">
               <li class="breadcrumb-item"><a href="pass-dashboard.php">Dashboard</a></li>
@@ -103,7 +103,7 @@
                 <div class="card-header card-header-divider"> Single Passenger Details<span class="card-subtitle"></span></div>
                 <div class="card-body">
                 <table class="table table-striped table-bordered table-hover table-fw-widget" id="table1">
-                <thead>
+                <thead class="thead-dark">
                       <tr>
                         <th>Name</th>
                         <th>Contact</th>
@@ -129,7 +129,7 @@
        
         
         </div>
-     
+        
       </div>
 
     </div>

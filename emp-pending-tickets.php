@@ -4,7 +4,7 @@
   include('../db.php');
   include('assets/inc/checklogin.php');
   check_login();
-  $aid=$_SESSION['admin_id'];
+  $aid=$_SESSION['emp_id'];
   //delete or remove library user  php code
 if(isset($_GET['del']))
 {
@@ -27,6 +27,7 @@ if(isset($_GET['del']))
 }
 ?>
 <!--End Server side scriptiing-->
+<!--Log on to codeastro.com for more projects!-->
 <!DOCTYPE html>
 <html lang="en">
 <!--HeAD-->
@@ -43,6 +44,7 @@ if(isset($_GET['del']))
 
       <div class="be-content">
       <div class="page-head">
+	  <!--Log on to codeastro.com for more projects!-->
           <h2 class="page-head-title">Pending Approval Tickets</h2>
           <nav aria-label="breadcrumb" role="navigation">
             <ol class="breadcrumb page-head-nav">
@@ -86,6 +88,7 @@ if(isset($_GET['del']))
                     </div>
                   </div>
                 </div>
+				<!--Log on to codeastro.com for more projects!-->
                 <div class="card-body">
                   <table class="table table-striped table-bordered table-hover table-fw-widget" id="table1">
                     <thead class="thead-dark">
@@ -124,7 +127,7 @@ if(isset($_GET['del']))
                         <td class="center">$<?php echo $row->train_fare;?></td>
                         <td class="center"><?php echo $row->fare_payment_code;?></td>
                         
-                        <td class="center"><a class ="badge badge-success" href ="emp-confirm-tickets.php?ticket_id=<?php echo $row->ticket_id;?>">Approve</a> 
+                        <td class="center"><a href ="emp-confirm-tickets.php?ticket_id=<?php echo $row->ticket_id;?>"><button class="btn btn-sm btn-success">Approve</button></a> 
                         </td>     
                                         
                       </tr>
@@ -135,7 +138,7 @@ if(isset($_GET['del']))
               </div>
             </div>
           </div>
-
+         
         </div>
       </div>
      

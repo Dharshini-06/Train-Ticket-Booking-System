@@ -66,7 +66,7 @@
                 <script>
                             setTimeout(function () 
                             { 
-                                swal("Success!","<?php echo $success;?>!","success");
+                                swal("Success!","<?php echo $succ;?>!","success");
                             },
                                 100);
                 </script>
@@ -85,7 +85,7 @@
         <?php } ?>
         <div class="main-content container-fluid">
        
-       <!--Train Details forms-->
+       <!--passenger-->
        <?php
             $aid=$_GET['pass_id'];
             $ret="select * from orrs_passenger where pass_id=?";
@@ -100,7 +100,7 @@
           <div class="row">
             <div class="col-md-12">
               <div class="card card-border-color card-border-color-success">
-                <div class="card-header card-header-divider">Create Passenger Profile<span class="card-subtitle">Fill All Details</span></div>
+                <div class="card-header card-header-divider">Update Passenger Profile<span class="card-subtitle">Fill All Details</span></div>
                 <div class="card-body">
                   <form method ="POST">
                     <div class="form-group row">
@@ -170,8 +170,6 @@
     <script src="assets/lib/select2/js/select2.full.min.js" type="text/javascript"></script>
     <script src="assets/lib/bootstrap-slider/bootstrap-slider.min.js" type="text/javascript"></script>
     <script src="assets/lib/bs-custom-file-input/bs-custom-file-input.js" type="text/javascript"></script>
-    <script src="assets/js/swal.js" type="text/javascript"></script>
-
     <script type="text/javascript">
       $(document).ready(function(){
       	//-initialize the javascript

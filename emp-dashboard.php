@@ -1,129 +1,265 @@
 <?php
-session_start();
-include('db.php');
-if (!isset($_SESSION['emp_login'])) {
-  $_SESSION['emp_login'] = true;
-$_SESSION['emp_name'] = $employee_name; 
-    header("Location: emp-dashboard.php");
-    exit();
-}
+  session_start();
+  include('../db.php');
+  include('assets/inc/checklogin.php');
+  check_login();
+  $aid=$_SESSION['emp_id'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Employee Dashboard | ORRS</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
-    <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            background-color: #f5f6fa;
-        }
+  <!--Head-->
+  <?php include("assets/inc/head.php");?>
+  <!--End Head-->
+  <body>
 
-        .wrapper {
-            display: flex;
-            height: 100vh;
-        }
+    <div class="be-wrapper be-fixed-sidebar">
 
-        .sidebar {
-            width: 220px;
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            padding-top: 20px;
-        }
+    <!--Navbar-->
+     <?php include("assets/inc/navbar.php");?>
+      <!--End Nav Bar-->
 
-        .sidebar h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 22px;
-        }
+      <!--Sidebar-->
+      <?php include('assets/inc/sidebar.php');?>
+      <!--End Sidebar-->
 
-        .sidebar a {
-            display: block;
-            color: #bdc3c7;
-            padding: 15px 20px;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
+      <div class="be-content">
+        <div class="main-content container-fluid">
+        <div class="row">
+            <div class="col-12 col-lg-6 col-xl-3">
+              <div class="widget widget-tile">
+              <div class="chart sparkline"><i class="material-icons">airline_seat_recline_normal</i></div>
+                <div class="data-info">
+                <?php
+                  //code for summing up number of passengers 
+                  $result ="SELECT count(*) FROM orrs_passenger";
+                  $stmt = $mysqli->prepare($result);
+                  $stmt->execute();
+                  $stmt->bind_result($pass);
+                  $stmt->fetch();
+                  $stmt->close();
+                ?>
+                  <div class="desc">Passengers</div>
+                  <div class="value"><span class="indicator indicator-equal mdi mdi-chevron-right"></span><span class="number" data-toggle="counter" data-end="<?php echo $pass;?>">0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-lg-6 col-xl-3">
+              <div class="widget widget-tile">
+              <div class="chart sparkline"><i class="material-icons">directions_subway</i></div>
+                <div class="data-info">
+                <?php
+                  //code for summing up number of trains
+                  $result ="SELECT count(*) FROM orrs_train";
+                  $stmt = $mysqli->prepare($result);
+                  $stmt->execute();
+                  $stmt->bind_result($train);
+                  $stmt->fetch();
+                  $stmt->close();
+                ?>
+                  <div class="desc">Trains</div>
+                  <div class="value"><span class="indicator indicator-positive mdi mdi-chevron-right"></span><span class="number" data-toggle="counter" data-end="<?php echo $train;?>">0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-12 col-lg-6 col-xl-3">
+              <div class="widget widget-tile">
+              <div class="chart sparkline"><i class="material-icons">receipt</i></div>
+                <div class="data-info">
+                <?php
+                  //code for summing up number of trains tickets
+                  $result ="SELECT count(*) FROM orrs_train_tickets WHERE confirmation ='Approved'";
+                  $stmt = $mysqli->prepare($result);
+                  $stmt->execute();
+                  $stmt->bind_result($ticket);
+                  $stmt->fetch();
+                  $stmt->close();
+                ?>
+                  <div class="desc">Booked Tickets</div>
+                  <div class="value"><span class="indicator indicator-positive mdi mdi-chevron-right"></span><span class="number" data-toggle="counter" data-end="<?php echo $ticket;?>">0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        .sidebar a:hover,
-        .sidebar a.active {
-            background-color: #34495e;
-            color: #fff;
-        }
 
-        .main-content {
-            flex: 1;
-            padding: 20px 40px;
-        }
+            <div class="col-12 col-lg-6 col-xl-3">
+              <div class="widget widget-tile">
+              <div class="chart sparkline"><i class="material-icons">assignment_late</i></div>
+                <div class="data-info">
+                <?php
+                  //code for summing up number of passengers 
+                  $result ="SELECT count(*) FROM orrs_train_tickets where confirmation != 'Approved' ";
+                  $stmt = $mysqli->prepare($result);
+                  $stmt->execute();
+                  $stmt->bind_result($pass);
+                  $stmt->fetch();
+                  $stmt->close();
+                ?>
+                  <div class="desc">Pending Tickets</div>
+                  <div class="value"><span class="indicator indicator-positive mdi mdi-chevron-right"></span><span class="number" data-toggle="counter" data-end="<?php echo $pass;?>">0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        .top-bar {
-            background: #fff;
-            padding: 15px 20px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
 
-        .top-bar h3 {
-            margin: 0;
-            font-size: 22px;
-            color: #2c3e50;
-        }
+          </div>            
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="card card-table">
+                <div class="card-header">Trains
+                
+                  <div class="tools dropdown"><span class=""></span><a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"><span class=""></span></a>
+                    
+                  </div>
+                </div>
+                <div class="card-body">
+                <!--Start Table-->
+                  <table class="table table-striped table-bordered table-hover table-fw-widget" id="table1">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th>Train Number</th>
+                        <th>Train</th>
+                        <th>Route</th>
+                        <th>Departure</th>
+                        <th>Arrival</th>
+                        <th>Dep.Time</th>
+                        <th>Total Passengers</th>
+                        <th>Fare</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php
 
-        .card {
-            background: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.05);
-        }
+                        $ret="SELECT * FROM orrs_train ORDER BY RAND() LIMIT 10 "; //sql code to get to ten trains randomly
+                        $stmt= $mysqli->prepare($ret) ;
+                        $stmt->execute() ;//ok
+                        $res=$stmt->get_result();
+                        $cnt=1;
+                        while($row=$res->fetch_object())
+                      {
+                      ?>
+                          <tr class="odd gradeX even gradeC odd gradeA ">
+                            <td><?php echo $row->number;?></td>
+                            <td><?php echo $row->name;?></td>
+                            <td><?php echo $row->route;?></td>
+                            <td><?php echo $row->current;?></td>
+                            <td><?php echo $row->destination;?></td>
+                            <td><?php echo $row->time;?></td>
+                            <td><?php echo $row->passengers;?></td>
+                            <td>$<?php echo $row->fare;?></td>
+                          </tr>
 
-        .card h4 {
-            margin-bottom: 15px;
-        }
+                      <?php $cnt=$cnt+1; }?>
+                    </tbody>
+                  </table>
+                  <!--eND Table-->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="card card-table">
+                <div class="card-header">Passenger Reservations
+                
+                  <div class="tools dropdown"><span class=""></span><a class="dropdown-toggle" href="#" role="button" data-toggle="dropdown"><span class=""></span></a>
+                    
+                  </div>
+                </div>
+                <div class="card-body">
+                <!--Start Table-->
+                  <table class="table table-striped table-bordered table-hover table-fw-widget" id="table1">
+                    <thead class="thead-dark">
+                      <tr>
+                        <th>#</th>
+                        <th>Passenger</th>
+                        <th>Address</th>
+                        <th>Train Number</th>
+                        <th>Train</th>
+                        <th>Departure</th>
+                        <th>Arrival</th>
+                        <th>Fare</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <?php
+                        $ret="SELECT * FROM orrs_train_tickets WHERE confirmation ='Approved'"; //sql code to get all details of booked trains.
+                        $stmt= $mysqli->prepare($ret) ;
+                        $stmt->execute() ;//ok
+                        $res=$stmt->get_result();
+                        $cnt=1;
+                        while($row=$res->fetch_object())
+                      {
+                      ?>
+                          <tr class="odd gradeX even gradeC odd gradeA ">
+                      
+                            <td><?php echo $cnt;?>
+                            <td><?php echo $row->pass_name;?></td>
+                            <td><?php echo $row->pass_addr;?></td>
+                            <td><?php echo $row->train_no;?></td>
+                            <td><?php echo $row->train_name;?></td>
+                            <td><?php echo $row->train_dep_stat ;?></td>
+                            <td><?php echo $row->train_arr_stat;?></td>
+                            <td>$<?php echo $row->train_fare;?></td>
+                          </tr>
 
-        .stat {
-            margin: 10px 0;
-            font-size: 18px;
-        }
-
-        .logout {
-            margin-top: 30px;
-            text-align: center;
-        }
-
-        .logout a {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-<div class="wrapper">
-    <div class="sidebar">
-        <h2>ORRS</h2>
-        <a href="emp-dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a>
-        <a href="emp-manage-train.php"><i class="fas fa-train"></i> Trains</a>
-        <a href="emp-manage-ticket.php"><i class="fas fa-ticket-alt"></i> Tickets</a>
-        <a href="admin-manage-employee.php"><i class="fas fa-user-cog"></i> Employees</a>
-        <div class="logout">
-            <a href="emp-logout.php"><i class="fas fa-sign-out-alt"></i> Back home</a>
+                      <?php $cnt=$cnt+1; }?>
+                    </tbody>
+                  </table>
+                  <!--eND Table-->
+                </div>
+              </div>
+            </div>
+          </div>
+         
         </div>
+       
+      </div>
+     
     </div>
 
-    <div class="main-content">
-        <div class="top-bar">
-            <h3>Welcome <?php echo $_SESSION['emp_name']; ?></h3>
-        </div>
+    <script src="assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="assets/lib/perfect-scrollbar/js/perfect-scrollbar.min.js" type="text/javascript"></script>
+    <script src="assets/lib/bootstrap/dist/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+    <script src="assets/js/app.js" type="text/javascript"></script>
+    <script src="assets/lib/jquery-flot/jquery.flot.js" type="text/javascript"></script>
+    <script src="assets/lib/jquery-flot/jquery.flot.pie.js" type="text/javascript"></script>
+    <script src="assets/lib/jquery-flot/jquery.flot.time.js" type="text/javascript"></script>
+    <script src="assets/lib/jquery-flot/jquery.flot.resize.js" type="text/javascript"></script>
+    <script src="assets/lib/jquery-flot/plugins/jquery.flot.orderBars.js" type="text/javascript"></script>
+    <script src="assets/lib/jquery-flot/plugins/curvedLines.js" type="text/javascript"></script>
+    <script src="assets/lib/jquery-flot/plugins/jquery.flot.tooltip.js" type="text/javascript"></script>
+    <script src="assets/lib/jquery.sparkline/jquery.sparkline.min.js" type="text/javascript"></script>
+    <script src="assets/lib/countup/countUp.min.js" type="text/javascript"></script>
+    <script src="assets/lib/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="assets/lib/jqvmap/jquery.vmap.min.js" type="text/javascript"></script>
+    <script src="assets/lib/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script>
+    <script src="assets/lib/datatables/datatables.net/js/jquery.dataTables.js" type="text/javascript"></script>
+    <script src="assets/lib/datatables/datatables.net-bs4/js/dataTables.bootstrap4.js" type="text/javascript"></script>
+    <script src="assets/lib/datatables/datatables.net-buttons/js/dataTables.buttons.min.js" type="text/javascript"></script>
+    <script src="assets/lib/datatables/datatables.net-buttons/js/buttons.flash.min.js" type="text/javascript"></script>
+    <script src="assets/lib/datatables/jszip/jszip.min.js" type="text/javascript"></script>
+    <script src="assets/lib/datatables/pdfmake/pdfmake.min.js" type="text/javascript"></script>
+    <script src="assets/lib/datatables/pdfmake/vfs_fonts.js" type="text/javascript"></script>
+    <script src="assets/lib/datatables/datatables.net-buttons/js/buttons.colVis.min.js" type="text/javascript"></script>
+    <script src="assets/lib/datatables/datatables.net-buttons/js/buttons.print.min.js" type="text/javascript"></script>
+    <script src="assets/lib/datatables/datatables.net-buttons/js/buttons.html5.min.js" type="text/javascript"></script>
+    <script src="assets/lib/datatables/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js" type="text/javascript"></script>
+    <script src="assets/lib/datatables/datatables.net-responsive/js/dataTables.responsive.min.js" type="text/javascript"></script>
+    <script src="assets/lib/datatables/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js" type="text/javascript"></script>
+    
+    <script type="text/javascript">
+      $(document).ready(function(){
+      	//-initialize the javascript
+      	App.init();
+      	App.dashboard();
+      
+      });
+    </script>
+  </body>
 
-        <div class="card">
-            <h4>Dashboard Overview</h4>
-            <div class="stat"><i class="fas fa-train"></i> Total Trains: <strong>8</strong></div>
-            <div class="stat"><i class="fas fa-ticket-alt"></i> Tickets Issued Today: <strong>120</strong></div>
-            <div class="stat"><i class="fas fa-user-friends"></i> Employees: <strong>15</strong></div>
-        </div>
-    </div>
-</div>
-</body>
 </html>

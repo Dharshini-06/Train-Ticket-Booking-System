@@ -37,7 +37,6 @@ if(isset($_GET['del']))
       <?php include('assets/inc/navbar.php');?>
       <!--End navbar-->
       <!--Sidebar-->
-	  <!--Log on to codeastro.com for more projects!-->
       <?php include('assets/inc/sidebar.php');?>
       <!--End Sidebar-->
 
@@ -89,7 +88,6 @@ if(isset($_GET['del']))
                 <div class="card-body">
                   <table class="table table-striped table-bordered table-hover table-fw-widget" id="table1">
                     <thead class="thead-dark">
-					<!--Log on to codeastro.com for more projects!-->
                       <tr>
                         <th>Name</th>
                         <th>Contact</th>
@@ -128,9 +126,8 @@ if(isset($_GET['del']))
               </div>
             </div>
           </div>
-		  <!--Log on to codeastro.com for more projects!-->
          
-        
+         
         </div>
       </div>
      

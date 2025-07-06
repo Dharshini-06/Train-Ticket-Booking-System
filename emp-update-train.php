@@ -1,353 +1,192 @@
 <?php
-session_start();
-include('db.php');
-include('assets/inc/checklogin.php');
-check_login();
-$aid = $_SESSION['emp_id'];
-
-$train_data = null;
-
-// Handle form submission to update train details
-if (isset($_POST['update_train'])) {
-  if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-      $err = "Error: Invalid or missing train ID.";
-  } else {
-      $id = intval($_GET['id']);
-      $number = $_POST['number'];
-      $name = $_POST['name'];
-      $route = $_POST['route'];
-      $current = $_POST['current'];
-      $destination = $_POST['destination'];
-      $time = $_POST['time'];
-      $passengers = intval($_POST['passengers']);
-      $food_cost = floatval($_POST['food_cost']);
-      $ac_price = floatval($_POST['ac_price']);
-      $non_ac_price = floatval($_POST['non_ac_price']);
-      $sleeper_price = floatval($_POST['sleeper_price']);
-
-      // Calculate seat data
-      $reserved_seats = $passengers;
-      $buffer_seats = ceil($reserved_seats * 0.10);
-      $total_seats = $reserved_seats + $buffer_seats;
-
-      $seat_features = [
-          [
-              "type" => "AC",
-              "price" => $ac_price,
-              "total" => floor($total_seats / 3),
-              "reserved" => floor($reserved_seats / 3),
-              "unreserved" => floor($total_seats / 3) - floor($reserved_seats / 3)
-          ],
-          [
-              "type" => "Non-AC",
-              "price" => $non_ac_price,
-              "total" => floor($total_seats / 3),
-              "reserved" => floor($reserved_seats / 3),
-              "unreserved" => floor($total_seats / 3) - floor($reserved_seats / 3)
-          ],
-          [
-              "type" => "Sleeper",
-              "price" => $sleeper_price,
-              "total" => floor($total_seats / 3),
-              "reserved" => floor($reserved_seats / 3),
-              "unreserved" => floor($total_seats / 3) - floor($reserved_seats / 3)
-          ]
-      ];
-
-      $seat_features_json = json_encode($seat_features);
-
-      // Debug log to check seat features JSON
-      error_log("Updating train ID $id with seat features: " . $seat_features_json);
-
-      $query = "UPDATE orrs_train SET number=?, name=?, route=?, `current`=?, destination=?, time=?, passengers=?, food_cost=?, seat_features=? WHERE id=?";
-      $stmt = $mysqli->prepare($query);
-
-      if ($stmt === false) {
-          $err = "Prepare failed: " . $mysqli->error;
-      } else {
-          $stmt->bind_param('ssssssidsi', $number, $name, $route, $current, $destination, $time, $passengers, $food_cost, $seat_features_json, $id);
-          $stmt->execute();
-
-          // Accept zero affected rows as success too
-          if ($stmt->affected_rows >= 0) {
-              $succ = "Train Details Updated Successfully";
-          } else {
-              $err = "Failed to Update Train ID $id or no changes made. Please Try Again.";
-          }
-          $stmt->close();
-      }
-  }
-}
-
-// Handle Cancel Train action
-if (isset($_GET['cancel'])) {
-    $id = intval($_GET['cancel']);
-    $adn = "DELETE FROM orrs_train WHERE id=?";
-    $stmt = $mysqli->prepare($adn);
-    if ($stmt === false) {
-        $err = "Prepare failed: " . $mysqli->error;
-    } else {
-        $stmt->bind_param('i', $id);
-        $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            $_SESSION['success'] = "Train Cancelled Successfully";
-            header("Location: emp-manage-train.php");
-            exit();
-        } else {
-            $err = "Failed to Cancel Train ID $id. Please Try Again.";
-        }
-        $stmt->close();
-    }
-}
-
-// Fetch train data to display
-if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-  $id = intval($_GET['id']);
-  
-  // Prepare SQL query to fetch train data
-  $query = "SELECT * FROM orrs_train WHERE id=?";
-  $stmt = $mysqli->prepare($query);
-
-  if ($stmt) {
-      // Bind and execute the statement
-      $stmt->bind_param('i', $id);
-      $stmt->execute();
-      $result = $stmt->get_result();
-
-      // Fetch the train data
-      if ($result->num_rows > 0) {
-          $train_data = $result->fetch_object();
-      } else {
-          $err = "Train with ID $id not found.";
-      }
-      $stmt->close();
-  } else {
-      // Handle prepare failure
-      $err = "Database error: " . $mysqli->error;
-      error_log("Prepare failed for train fetch: " . $mysqli->error);
-  }
-} else {
-  $err = "Invalid train ID.";
-}
-
+    session_start();
+    include('../db.php');
+    //date_default_timezone_set('Africa /Nairobi');
+    include('assets/inc/checklogin.php');
+    check_login();
+    $aid=$_SESSION['emp_id'];
+    if(isset($_POST['update_train']))
+    {
+            $id = $_GET['id'];
+            $name = $_POST['name'];
+            $route = $_POST['route'];
+            $current = $_POST['current'];
+            $destination = $_POST['destination'];
+            $time = $_POST['time'];
+            $number = $_POST['number'];
+            $fare = $_POST['fare'];
+            $passengers = $_POST['passengers'];
+            //sql querry to post the entered information
+            $query="update orrs_train set name= ?, route = ?, current = ?, destination = ?, time = ?, number = ?, fare = ?, passengers = ? where id = ?";
+            $stmt = $mysqli->prepare($query);
+            //bind this parameters
+            $rc=$stmt->bind_param('ssssssssi', $name, $route, $current, $destination, $time, $number, $fare, $passengers, $id);
+            $stmt->execute();
+                if($stmt)
+                {
+                    $succ = "Train Updated";
+                }
+                else 
+                {
+                    $err = "Please Try Again Later";
+                }
+            #echo"<script>alert('Your Profile Has Been Updated Successfully');</script>";
+            }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
-<?php include('assets/inc/head.php'); ?>
-<body>
-<div class="be-wrapper be-fixed-sidebar">
-<?php include('assets/inc/navbar.php'); ?>
-<?php include('assets/inc/sidebar.php'); ?>
+<!--Head-->
+<?php include('assets/inc/head.php');?>
+<!--End Head-->
+  <body>
+    <div class="be-wrapper be-fixed-sidebar ">
+    <!--Navigation Bar-->
+      <?php include('assets/inc/navbar.php');?>
+      <!--End Navigation Bar-->
 
-<div class="be-content">
-  <div class="page-head">
-    <h2 class="page-head-title">Update Train</h2>
-  </div>
+      <!--Sidebar-->
+      <?php include('assets/inc/sidebar.php');?>
+      <!--End Sidebar-->
+      <div class="be-content">
+        <div class="page-head">
+          <h2 class="page-head-title">Manage Train</h2>
+          <nav aria-label="breadcrumb" role="navigation">
+            <ol class="breadcrumb page-head-nav">
+              <li class="breadcrumb-item"><a href="pass-dashboard.php">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="#">Trains</a></li>
+              <li class="breadcrumb-item active">Manage Train</li>
+            </ol>
+          </nav>
+        </div>
+            <?php if(isset($succ)) {?>
+                                <!--This code for injecting an alert-->
+                <script>
+                            setTimeout(function () 
+                            { 
+                                swal("Success!","<?php echo $succ;?>!","success");
+                            },
+                                100);
+                </script>
 
-  <?php if (isset($succ)) { ?>
-    <script>
-      setTimeout(function () {
-        swal("Success!", "<?php echo $succ; ?>", "success");
-      }, 100);
-    </script>
-  <?php } ?>
+        <?php } ?>
+        <?php if(isset($err)) {?>
+        <!--This code for injecting an alert-->
+                <script>
+                            setTimeout(function () 
+                            { 
+                                swal("Failed!","<?php echo $err;?>!","Failed");
+                            },
+                                100);
+                </script>
 
-  <?php if (isset($err)) { ?>
-    <script>
-      setTimeout(function () {
-        swal("Failed!", "<?php echo $err; ?>", "error");
-      }, 100);
-    </script>
-  <?php } ?>
-
-  <div class="main-content container-fluid">
-    <?php if ($train_data): 
-      $reserved_seats = $train_data->passengers;
-      $buffer_seats = ceil($reserved_seats * 0.10);
-      $total_seats = $reserved_seats + $buffer_seats;
-      $available_seats = $buffer_seats;
-      $seat_features = json_decode($train_data->seat_features, true);
-
-      // Fallback if decoding fails or array is empty
-      if (!is_array($seat_features) || empty($seat_features)) {
-          $seat_features = [
-              [
-                  "type" => "AC",
-                  "price" => 500,
-                  "total" => floor($total_seats / 3),
-                  "reserved" => floor($reserved_seats / 3),
-                  "unreserved" => floor($total_seats / 3) - floor($reserved_seats / 3)
-              ],
-              [
-                  "type" => "Non-AC",
-                  "price" => 200,
-                  "total" => floor($total_seats / 3),
-                  "reserved" => floor($reserved_seats / 3),
-                  "unreserved" => floor($total_seats / 3) - floor($reserved_seats / 3)
-              ],
-              [
-                  "type" => "Sleeper",
-                  "price" => 300,
-                  "total" => floor($total_seats / 3),
-                  "reserved" => floor($reserved_seats / 3),
-                  "unreserved" => floor($total_seats / 3) - floor($reserved_seats / 3)
-              ]
-          ];
-      }
-      
-
-      $ac_price = $seat_features[0]['price'] ?? 0;
-      $non_ac_price = $seat_features[1]['price'] ?? 0;
-      $sleeper_price = $seat_features[2]['price'] ?? 0;
-      $food_cost = $train_data->food_cost ?? 100;
-      ?>
-
-      <?php
-      $seat_features = json_decode($train_data->seat_features, true);
-      
-      // Prevent crash if decoding fails
-      if (!is_array($seat_features)) {
-          $seat_features = [];
-      }
-      
-      $features = '<div class="seat-features-list">';
-      foreach ($seat_features as $feature) {
-          $type = htmlspecialchars($feature['type'] ?? 'Unknown');
-          $price = isset($feature['price']) ? floatval($feature['price']) : 0;
-          $total = $feature['total'] ?? 0;
-          $reserved = $feature['reserved'] ?? 0;
-          $unreserved = $feature['unreserved'] ?? 0;
-      
-          $features .= "<div class='mb-2 p-2 border rounded bg-light'>
-              <strong>{$type}</strong><br>
-              Adult: ₹" . number_format($price, 2) . "<br>
-              Child: ₹" . number_format($price * 0.5, 2) . "<br>
-              Senior: ₹" . number_format($price * 0.8, 2) . "<br>
-              Total: {$total}<br>
-              Reserved: {$reserved}<br>
-              Unreserved: {$unreserved}</div>";
-      }
-      $features .= '</div>';
-      ?>
-      
-
-    <div class="card card-table">
-      <div class="card-header">Train Info</div>
-      <div class="card-body table-responsive">
-        <table class="table table-striped table-bordered">
-          <thead>
-            <tr>
-              <th>Number</th>
-              <th>Name</th>
-              <th>Route</th>
-              <th>Departure</th>
-              <th>Arrival</th>
-              <th>Time</th>
-              <th>Food</th>
-              <th>Passengers</th>
-              <th>Seat Features</th>
-              <th>Reserved</th>
-              <th>Available</th>
-              <th>Total</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><?= $train_data->number; ?></td>
-              <td><?= $train_data->name; ?></td>
-              <td><?= $train_data->route; ?></td>
-              <td><?= $train_data->current; ?></td>
-              <td><?= $train_data->destination; ?></td>
-              <td><?= $train_data->time; ?></td>
-              <td>₹<?= number_format($food_cost, 2); ?></td>
-              <td><?= $train_data->passengers; ?></td>
-              <td><?= $features; ?></td>
-              <td><?= $reserved_seats; ?></td>
-              <td><?= $available_seats; ?></td>
-              <td><?= $total_seats; ?></td>
-              <td><a class="badge badge-danger" href="emp-update-train.php?cancel=<?= $train_data->id ?>" onclick="return confirm('Cancel this train?')">Cancel</a></td>
-            </tr>
-          </tbody>
-        </table>
+        <?php } ?>
+        <div class="main-content container-fluid">
+       <!--Train Details forms-->
+       <?php
+            $aid=$_GET['id'];
+            $ret="select * from orrs_train where id=?";
+            $stmt= $mysqli->prepare($ret) ;
+            $stmt->bind_param('i',$aid);
+            $stmt->execute() ;//ok
+            $res=$stmt->get_result();
+            //$cnt=1;
+            while($row=$res->fetch_object())
+        {
+        ?>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card card-border-color card-border-color-success">
+                <div class="card-header card-header-divider">Update Train<span class="card-subtitle"> Please Fill All Details</span></div>
+                <div class="card-body">
+                  <form method ="POST">
+                    <div class="form-group row">
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3"> Train Name</label>
+                      <div class="col-12 col-sm-8 col-lg-6">
+                        <input class="form-control" name="name" value ="<?php echo $row->name;?>" id="inputText3" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3"> Train Number</label>
+                      <div class="col-12 col-sm-8 col-lg-6">
+                        <input class="form-control" name="number" value = "<?php echo $row->number;?>" id="inputText3" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Train Route</label>
+                      <div class="col-12 col-sm-8 col-lg-6">
+                        <input class="form-control" name="route"  value ="<?php echo $row->route;?>" id="inputText3" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Departure</label>
+                      <div class="col-12 col-sm-8 col-lg-6">
+                        <input class="form-control" name="current" value ="<?php echo $row->current;?>"  id="inputText3" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Arrival</label>
+                      <div class="col-12 col-sm-8 col-lg-6">
+                        <input class="form-control" name="destination" value ="<?php echo $row->destination;?>"  id="inputText3" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Departure Time</label>
+                      <div class="col-12 col-sm-8 col-lg-6">
+                        <input class="form-control" name="time" value = "<?php echo $row->time;?>" id="inputText3" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Number of passengers</label>
+                      <div class="col-12 col-sm-8 col-lg-6">
+                        <input class="form-control" name="passengers" value = "<?php echo $row->passengers;?>"  id="inputText3" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Train Fare</label>
+                      <div class="col-12 col-sm-8 col-lg-6">
+                        <input class="form-control" name="fare" value = "<?php echo $row->fare;?>"  id="inputText3" type="text">
+                      </div>
+                    </div>
+                    
+                    <div class="col-sm-6">
+                        <p class="text-right">
+                          <input class="btn btn-space btn-success" value ="Update Train" name = "update_train" type="submit">
+                          <button class="btn btn-space btn-danger">Cancel</button>
+                        </p>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+       
+        <!--End Train Instance-->
+        <?php }?>
+        
+        </div>
+        
       </div>
+
     </div>
+    <script src="assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="assets/lib/perfect-scrollbar/js/perfect-scrollbar.min.js" type="text/javascript"></script>
+    <script src="assets/lib/bootstrap/dist/js/bootstrap.bundle.min.js" type="text/javascript"></script>
+    <script src="assets/js/app.js" type="text/javascript"></script>
+    <script src="assets/lib/jquery-ui/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="assets/lib/jquery.nestable/jquery.nestable.js" type="text/javascript"></script>
+    <script src="assets/lib/moment.js/min/moment.min.js" type="text/javascript"></script>
+    <script src="assets/lib/datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+    <script src="assets/lib/select2/js/select2.min.js" type="text/javascript"></script>
+    <script src="assets/lib/select2/js/select2.full.min.js" type="text/javascript"></script>
+    <script src="assets/lib/bootstrap-slider/bootstrap-slider.min.js" type="text/javascript"></script>
+    <script src="assets/lib/bs-custom-file-input/bs-custom-file-input.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(document).ready(function(){
+      	//-initialize the javascript
+      	App.init();
+      	App.formElements();
+      });
+    </script>
+  </body>
 
-
-  <div class="card-header bg-primary text-white">
-    <h3 class="mb-0">Update Train Details</h3>
-  </div>
-  <div class="card-body">
-
-        <form method="POST">
-          <div class="form-group">
-            <label>Train Number</label>
-            <input type="text" name="number" class="form-control" value="<?= $train_data->number; ?>" required>
-          </div>
-          <div class="form-group">
-            <label>Train Name</label>
-            <input type="text" name="name" class="form-control" value="<?= $train_data->name; ?>" required>
-          </div>
-          <div class="form-group">
-            <label>Route</label>
-            <input type="text" name="route" class="form-control" value="<?= $train_data->route; ?>" required>
-          </div>
-          <div class="form-group">
-            <label>Departure Station</label>
-            <input type="text" name="current" class="form-control" value="<?= $train_data->current; ?>" required>
-          </div>
-          <div class="form-group">
-            <label>Arrival Station</label>
-            <input type="text" name="destination" class="form-control" value="<?= $train_data->destination; ?>" required>
-          </div>
-          <div class="form-group">
-            <label>Departure Time</label>
-            <input type="time" name="time" class="form-control" value="<?= $train_data->time; ?>" required>
-          </div>
-          <div class="form-group">
-            <label>Total Passengers</label>
-            <input type="number" name="passengers" class="form-control" value="<?= $train_data->passengers; ?>" required>
-          </div>
-          <div class="form-group">
-            <label>Food Cost (₹)</label>
-            <input type="number" name="food_cost" step="0.01" class="form-control" value="<?= $food_cost; ?>" required>
-          </div>
-          <div class="form-group">
-            <label>AC Price (₹)</label>
-            <input type="number" name="ac_price" step="0.01" class="form-control" value="<?= $ac_price; ?>" required>
-          </div>
-          <div class="form-group">
-            <label>Non-AC Price (₹)</label>
-            <input type="number" name="non_ac_price" step="0.01" class="form-control" value="<?= $non_ac_price; ?>" required>
-          </div>
-          <div class="form-group">
-            <label>Sleeper Price (₹)</label>
-            <input type="number" name="sleeper_price" step="0.01" class="form-control" value="<?= $sleeper_price; ?>" required>
-          </div>
-          <div class="text-right">
-            <button type="submit" name="update_train" class="btn btn-primary">Update Train</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <?php else: ?>
-      <div class="alert alert-danger">Train not found or invalid ID.</div>
-    <?php endif; ?>
-  </div>
-</div>
-
-<script src="assets/lib/jquery/jquery.min.js"></script>
-<script src="assets/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="assets/js/app.js"></script>
-<script src="assets/lib/datatables/datatables.net/js/jquery.dataTables.js"></script>
-<script src="assets/lib/datatables/datatables.net-bs4/js/dataTables.bootstrap4.js"></script>
-<script>
-  $(document).ready(function(){
-    App.init();
-    App.dataTables();
-  });
-</script>
-</body>
 </html>

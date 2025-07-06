@@ -1,31 +1,31 @@
 <?php
     session_start();
-    include('db.php');
+    include('../db.php');
     //date_default_timezone_set('Africa /Nairobi');
     include('assets/inc/checklogin.php');
     check_login();
-    $aid=$_SESSION['admin_id'];
+    $aid=$_SESSION['emp_id'];
     if(isset($_POST['Update_Profile']))
     {
 
-            $admin_fname=$_POST['admin_fname'];
-            $admin_lname = $_POST['admin_lname'];
-            //$emp_phone=$_POST['emp_phone'];
-            //$emp_addr=$_POST['emp_addr'];
-            $admin_email=$_POST['admin_email'];
-            $admin_uname=$_POST['admin_uname'];
+            $emp_fname=$_POST['emp_fname'];
+            $emp_lname = $_POST['emp_lname'];
+            $emp_phone=$_POST['emp_phone'];
+            $emp_addr=$_POST['emp_addr'];
+            $emp_email=$_POST['emp_email'];
+            $emp_uname=$_POST['emp_uname'];
             //$pass_bday=$_POST['pass_bday'];
             //$pass_ocupation=$_POST['pass_occupation'];
             //$pass_bio=($_POST['pass_bio']);
             //$passwordconf=md5($_POST['passwordconf']);
             //$date = date('d-m-Y h:i:s', time());
-            $query="update  orrs_admin set admin_fname = ?, admin_lname = ?,  admin_email = ?, admin_uname = ? where admin_id=?";
+            $query="update  orrs_employee set emp_fname = ?, emp_lname = ?, emp_phone = ?, emp_addr = ?, emp_email = ?, emp_uname = ? where emp_id=?";
             $stmt = $mysqli->prepare($query);
-            $rc=$stmt->bind_param('ssssi', $admin_fname, $admin_lname,  $admin_email, $admin_uname, $aid);
+            $rc=$stmt->bind_param('ssssssi', $emp_fname, $emp_lname, $emp_phone, $emp_addr, $emp_email, $emp_uname, $aid);
             $stmt->execute();
                 if($stmt)
                 {
-                    $succ = "Your  Profile  Has Been Updated";
+                    $succ = "Your Employee Profile  Has Been Updated";
                 }
                 else 
                 {
@@ -53,7 +53,7 @@
           <h2 class="page-head-title">Profile </h2>
           <nav aria-label="breadcrumb" role="navigation">
             <ol class="breadcrumb page-head-nav">
-              <li class="breadcrumb-item"><a href="emp-dashboard.php">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="pass-dashboard.php">Dashboard</a></li>
               <li class="breadcrumb-item"><a href="#">Profile</a></li>
               <li class="breadcrumb-item active">Update Profile</li>
             </ol>
@@ -83,8 +83,8 @@
         <?php } ?>
         <div class="main-content container-fluid">
         <?php
-            $aid=$_SESSION['admin_id'];
-            $ret="select * from orrs_admin where admin_id=?";
+            $aid=$_SESSION['emp_id'];
+            $ret="select * from orrs_employee where emp_id=?";
             $stmt= $mysqli->prepare($ret) ;
             $stmt->bind_param('i',$aid);
             $stmt->execute() ;//ok
@@ -102,26 +102,37 @@
                     <div class="form-group row">
                       <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">First Name</label>
                       <div class="col-12 col-sm-8 col-lg-6">
-                        <input class="form-control" name="admin_fname" value="<?php echo $row->admin_fname;?>" id="inputText3" type="text">
+                        <input class="form-control" name="emp_fname" value="<?php echo $row->emp_fname;?>" id="inputText3" type="text">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Last Name</label>
                       <div class="col-12 col-sm-8 col-lg-6">
-                        <input class="form-control" name="admin_lname" value="<?php echo $row->admin_lname;?>" id="inputText3" type="text">
+                        <input class="form-control" name="emp_lname" value="<?php echo $row->emp_lname;?>" id="inputText3" type="text">
                       </div>
                     </div>
-                    
+                    <div class="form-group row">
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Contact Number</label>
+                      <div class="col-12 col-sm-8 col-lg-6">
+                        <input class="form-control" name="emp_phone" value="<?php echo $row->emp_phone;?>" id="inputText3" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Address</label>
+                      <div class="col-12 col-sm-8 col-lg-6">
+                        <input class="form-control" name="emp_addr" value="<?php echo $row->emp_addr;?>" id="inputText3" type="text">
+                      </div>
+                    </div>
                     <div class="form-group row">
                       <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Email</label>
                       <div class="col-12 col-sm-8 col-lg-6">
-                        <input class="form-control" name="admin_email" value="<?php echo $row->admin_email;?>" id="inputText3" type="text">
+                        <input class="form-control" name="emp_email" value="<?php echo $row->emp_email;?>" id="inputText3" type="text">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Username</label>
                       <div class="col-12 col-sm-8 col-lg-6">
-                        <input class="form-control" name="admin_uname" value="<?php echo $row->admin_uname;?>" id="inputText3" type="text">
+                        <input class="form-control" name="emp_uname" value="<?php echo $row->emp_uname;?>" id="inputText3" type="text">
                       </div>
                     </div>
                     
@@ -140,7 +151,6 @@
         <?php }?>
         
         </div>
-        
       </div>
 
     </div>

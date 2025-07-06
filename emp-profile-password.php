@@ -1,10 +1,10 @@
 <?php
     session_start();
-    include('db.php');
+    include('../db.php');
     //date_default_timezone_set('Africa /Nairobi');
     include('assets/inc/checklogin.php');
     check_login();
-    $aid=$_SESSION['admin_id'];
+    $aid=$_SESSION['emp_id'];
 
             if(isset($_POST['Update_Password']))
 
@@ -25,11 +25,11 @@
 		    //$id=intval($_GET['id']);
 		    move_uploaded_file($_FILES["pass_dpic"]["tmp_name"],"assets/img/profile/".$_FILES["pass_dpic"]["name"]);
             */
-            //  $aid=$_SESSION['emp_id'];
-            $admin_pwd=sha1(md5($_POST['admin_pwd']));
-            $query="update orrs_admin set admin_pwd = ? where admin_id=?";
+            $aid=$_SESSION['emp_id'];
+            $emp_pwd=sha1(md5($_POST['emp_pwd']));
+            $query="update orrs_employee set emp_pwd = ? where emp_id=?";
             $stmt = $mysqli->prepare($query);
-            $rc=$stmt->bind_param('si', $admin_pwd, $aid);
+            $rc=$stmt->bind_param('si', $emp_pwd, $aid);
             $stmt->execute();
                 if($stmt)
                 {
@@ -58,10 +58,10 @@
       <!--End Sidebar-->
       <div class="be-content">
         <div class="page-head">
-          <h2 class="page-head-title">Change Password </h2>
+          <h2 class="page-head-title">Profile </h2>
           <nav aria-label="breadcrumb" role="navigation">
             <ol class="breadcrumb page-head-nav">
-              <li class="breadcrumb-item"><a href="admin-dashboard.php">Dashboard</a></li>
+              <li class="breadcrumb-item"><a href="pass-dashboard.php">Dashboard</a></li>
               <li class="breadcrumb-item"><a href="#">Profile</a></li>
               <li class="breadcrumb-item active">Change Password | Profile Photo </li>
             </ol>
@@ -91,8 +91,8 @@
         <?php } ?>
         <div class="main-content container-fluid">
         <?php
-            $aid=$_SESSION['admin_id'];
-            $ret="select * from orrs_admin where admin_id=?";
+            $aid=$_SESSION['emp_id'];
+            $ret="select * from orrs_employee where emp_id=?";
             $stmt= $mysqli->prepare($ret) ;
             $stmt->bind_param('i',$aid);
             $stmt->execute() ;//ok
@@ -115,7 +115,7 @@
                     <div class="form-group row">
                       <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">New Password</label>
                       <div class="col-12 col-sm-8 col-lg-6">
-                        <input class="form-control" name="admin_pwd"  id="inputText3" type="password">
+                        <input class="form-control" name="emp_pwd"  id="inputText3" type="password">
                       </div>
                     </div>
                     <div class="form-group row">
@@ -140,7 +140,6 @@
         <?php }?>
         
       </div>
-
     </div>
     <script src="assets/lib/jquery/jquery.min.js" type="text/javascript"></script>
     <script src="assets/lib/perfect-scrollbar/js/perfect-scrollbar.min.js" type="text/javascript"></script>

@@ -51,7 +51,7 @@
       <!--End Sidebar-->
       <div class="be-content">
         <div class="page-head">
-          <h2 class="page-head-title">Add Passenger</h2>
+          <h2 class="page-head-title">Create Passenger</h2>
           <nav aria-label="breadcrumb" role="navigation">
             <ol class="breadcrumb page-head-nav">
               <li class="breadcrumb-item"><a href="pass-dashboard.php">Dashboard</a></li>
@@ -60,7 +60,7 @@
             </ol>
           </nav>
         </div>
-            <?php if(isset($success)) {?>
+        <?php if(isset($success)) {?>
                                 <!--This code for injecting an alert-->
                 <script>
                             setTimeout(function () 
@@ -93,49 +93,49 @@
                     <div class="form-group row">
                       <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3"> First Name</label>
                       <div class="col-12 col-sm-8 col-lg-6">
-                        <input class="form-control" name="pass_fname"  id="inputText3" type="text" required>
+                        <input class="form-control" name="pass_fname"  id="inputText3" type="text">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Last Name</label>
                       <div class="col-12 col-sm-8 col-lg-6">
-                        <input class="form-control" name="pass_lname"  id="inputText3" type="text" required>
+                        <input class="form-control" name="pass_lname"  id="inputText3" type="text">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Contact Number</label>
                       <div class="col-12 col-sm-8 col-lg-6">
-                        <input class="form-control" name="pass_phone"  id="inputText3" type="number" required>
+                        <input class="form-control" name="pass_phone"  id="inputText3" type="number">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Address</label>
                       <div class="col-12 col-sm-8 col-lg-6">
-                        <input class="form-control" name="pass_addr"  id="inputText3" type="text" required>
+                        <input class="form-control" name="pass_addr"  id="inputText3" type="text">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Email</label>
                       <div class="col-12 col-sm-8 col-lg-6">
-                        <input class="form-control" name="pass_email"  id="inputText3" type="email" required>
+                        <input class="form-control" name="pass_email"  id="inputText3" type="email">
                       </div>
                     </div>
                     <div class="form-group row">
                       <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Username</label>
                       <div class="col-12 col-sm-8 col-lg-6">
-                        <input class="form-control" name="pass_uname"  id="inputText3" type="text" required>
+                        <input class="form-control" name="pass_uname"  id="inputText3" type="text">
                       </div>
                     </div>
                     
                     <div class="form-group row">
                       <label class="col-12 col-sm-3 col-form-label text-sm-right" for="inputText3">Password</label>
                       <div class="col-12 col-sm-8 col-lg-6">
-                        <input class="form-control" name="pass_pwd"  id="inputText3" type="password" required>
+                        <input class="form-control" name="pass_pwd"  id="inputText3" type="password">
                       </div>
                     </div>
                     <div class="col-sm-6">
                         <p class="text-right">
-                          <input class="btn btn-space btn-success" value ="Add Passenger " name = "Create_Profile" type="submit">
+                          <input class="btn btn-space btn-success" value ="Create Passenger " name = "Create_Profile" type="submit">
                           <button class="btn btn-space btn-danger">Cancel</button>
                         </p>
                       </div>
@@ -148,6 +148,7 @@
         
         
         </div>
+        
       </div>
 
     </div>
@@ -163,8 +164,6 @@
     <script src="assets/lib/select2/js/select2.full.min.js" type="text/javascript"></script>
     <script src="assets/lib/bootstrap-slider/bootstrap-slider.min.js" type="text/javascript"></script>
     <script src="assets/lib/bs-custom-file-input/bs-custom-file-input.js" type="text/javascript"></script>
-    <script src="assets/js/swal.js" type="text/javascript"></script>
-
     <script type="text/javascript">
       $(document).ready(function(){
       	//-initialize the javascript
