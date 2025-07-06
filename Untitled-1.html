@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Train Location</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>#map { height: 500px; }</style>
+</head>
+<body>
+
+<h3>Live Location of Train T101</h3>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+    var map = L.map('map').setView([20.5937, 78.9629], 5); // India view
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data © OpenStreetMap contributors'
+    }).addTo(map);
+
+    var marker = L.marker([20.5937, 78.9629]).addTo(map).bindPopup("Loading...");
+
+    function updateLocation() {
+        fetch("get-train-location.php")
+        .then(response => response.json())
+        .then(data => {
+            marker.setLatLng([data.lat, data.lng])
+                  .bindPopup("Train T101 is here").openPopup();
+            map.setView([data.lat, data.lng], 7);
+        });
+    }
+
+    setInterval(updateLocation, 5000);
+</script>
+
+</body>
+</html>
