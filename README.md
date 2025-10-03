@@ -48,5 +48,6 @@ A web-based Train Ticket Booking System developed using **PHP**, **MySQL**, and 
    git clone https://github.com/Dharshini-06/Train-Ticket-Booking-System.git
 
 ## 🎥 Demo Video
-[Watch Demo](./demo/Train Ticket Booking System.mp4)
+[Watch Demo](./Train%20Ticket%20Booking%20System.mp4)
+
 
